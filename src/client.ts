@@ -4,20 +4,19 @@ import { TicTacToe, TicTacToeGameState } from './game/game';
 import { PlayerID, State } from 'boardgame.io';
 
 interface TicTacToeClientProps {
-  playerID: PlayerID;
+  playerID: PlayerID | null;
 }
 
 class TicTacToeClient {
   private client: ReturnType<typeof Client<TicTacToeGameState>>;
   private rootElement: HTMLElement;
-  private playerID: PlayerID;
 
   constructor(rootElement: HTMLElement, { playerID }: TicTacToeClientProps) {
     this.client = Client<TicTacToeGameState>({
       game: TicTacToe,
       //multiplayer: Local(),
       multiplayer: SocketIO({ server: 'localhost:8000' }),
-      playerID,
+      playerID: playerID ? playerID : undefined,
     });
     this.client.start();
     this.rootElement = rootElement; 
@@ -61,7 +60,7 @@ class TicTacToeClient {
       const cells = [];
       for (let j = 0; j < 3; j++) {
         const id = 3 * i + j;
-        cells.push(`<td class="cell" data-id="${id}"></td>`);
+        cells.push(`<td class="cell" data-id="${id}"></td>`); 
       }
       rows.push(`<tr>${cells.join('')}</tr>`);
     }
@@ -96,7 +95,4 @@ const appElement = document.getElementById('app') as HTMLElement;
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const playerID = urlParams.get('player');
-if (!playerID) {
-  throw new Error("missing playerID parameter");
-}
 const app = new TicTacToeClient(appElement, { playerID } );
