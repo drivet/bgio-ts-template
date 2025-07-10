@@ -1,1 +1,2 @@
-# bgio-ts-template
+# galileo-project-bgio
+Galielo Project Board Game Implementation
