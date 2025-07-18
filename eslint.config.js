@@ -3,12 +3,12 @@ import { defineConfig, globalIgnores } from 'eslint/config';
 import importPlugin from 'eslint-plugin-import';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
-import tseslint from 'typescript-eslint';
+import ts from 'typescript-eslint';
 
 export default defineConfig([
   globalIgnores(['dist/']),
   js.configs.recommended,
-  tseslint.configs.recommended,
+  ts.configs.recommended,
   {
     plugins: {
       'simple-import-sort': simpleImportSort,
@@ -31,13 +31,6 @@ export default defineConfig([
     files: ['*.test.ts'],
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
-    },
-  },
-  {
-    files: ['*.js'],
-    rules: {
-      'simple-import-sort/sort': 'off',
-      'import/order': ['error', { 'newlines-between': 'always' }],
     },
   },
   eslintPluginPrettierRecommended,
