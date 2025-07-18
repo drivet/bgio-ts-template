@@ -1,4 +1,4 @@
-import { Game } from 'boardgame.io';
+import { Ctx, Game, PlayerID } from 'boardgame.io';
 import { INVALID_MOVE } from 'boardgame.io/core';
 
 export type strOrNull = string | null;
@@ -33,6 +33,27 @@ export interface TicTacToeGameState {
   cells: strOrNull[];
 }
 
+export type TicTacToeFnCtx = { G: TicTacToeGameState; ctx: Ctx };
+export type TicTacToeMoveCtx = TicTacToeFnCtx & { playerID: PlayerID };
+
+export function clickCell(fnCtx: TicTacToeMoveCtx, id: number) {
+  const { G, playerID } = fnCtx;
+  if (G.cells[id] !== null) {
+    return INVALID_MOVE;
+  }
+  G.cells[id] = playerID;
+}
+
+export function endIf(fnCtx: TicTacToeFnCtx): { winner: string } | { draw: boolean } | undefined {
+  const { G, ctx } = fnCtx;
+  if (IsVictory(G.cells)) {
+    return { winner: ctx.currentPlayer };
+  }
+  if (IsDraw(G.cells)) {
+    return { draw: true };
+  }
+}
+
 export const TicTacToe: Game<TicTacToeGameState> = {
   setup: () => ({ cells: Array<strOrNull>(9).fill(null) }),
 
@@ -42,20 +63,7 @@ export const TicTacToe: Game<TicTacToeGameState> = {
   },
 
   moves: {
-    clickCell: ({ G, playerID }, id) => {
-      if (G.cells[id] !== null) {
-        return INVALID_MOVE;
-      }
-      G.cells[id] = playerID;
-    },
+    clickCell,
   },
-
-  endIf: ({ G, ctx }) => {
-    if (IsVictory(G.cells)) {
-      return { winner: ctx.currentPlayer };
-    }
-    if (IsDraw(G.cells)) {
-      return { draw: true };
-    }
-  },
+  endIf,
 };
