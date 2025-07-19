@@ -33,7 +33,7 @@ function cellClick(event: MouseEvent) {
   <table>
     <tbody>
       <tr v-for="r in 3">
-        <td v-for="d in 3" class="cell" v-bind:data-id="(r - 1) * 3 + (d - 1)" @click="cellClick">
+        <td v-for="d in 3" class="cell" :data-id="(r - 1) * 3 + (d - 1)" @click="cellClick">
           {{ stateRef?.G.cells[(r - 1) * 3 + (d - 1)] }}
         </td>
       </tr>
